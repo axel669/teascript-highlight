@@ -1,0 +1,40 @@
+{
+	"name": "teascript-syntax",
+	"displayName": "TeaScript Syntax Highlighter",
+	"description": "TeaScript highlighter for VS Code",
+	"version": "0.1.0",
+	"engines": {
+		"vscode": ">=0.9.0-pre.1"
+	},
+	"publisher": "Axel669",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/axel669/teascript-vscode"
+	},
+	"contributes": {
+		"languages": [
+			{
+				"id": "teascript",
+				"aliases": [
+					"TeaScript"
+				],
+				"extensions": [
+					".tea"
+				],
+				"configuration": "./tea.language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "teascript",
+				"scopeName": "source.tea",
+				"path": "./syntaxes/tea.tmLanguage.json"
+			}
+		]
+	},
+	"__metadata": {
+		"id": "b2c9e0ea-2b96-42c4-bf13-dd59c37cb3cc",
+		"publisherDisplayName": "Axel669",
+		"publisherId": "668e0b7f-4aa5-41a3-bbef-fbdfaa7341da"
+	}
+}

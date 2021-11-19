@@ -177,7 +177,7 @@
                 },
                 {
                     "name": "keyword",
-                    "match": "\\b(if|try|for(\\s+(ever|await)?))\\b"
+                    "match": "\\b(if|try|for(\\s+(ever|await)?)|yield|await)\\b"
                 },
                 {
                     "name": "keyword",
@@ -217,7 +217,7 @@
                 {
                     "name": "variable.parameter",
                     "begin": ":",
-                    "end": "\\b",
+                    "end": "\\s",
                     "patterns": [
                         {"include": "#expr"}
                     ]

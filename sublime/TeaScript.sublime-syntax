@@ -1,0 +1,227 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/syntax.html
+name: TeaScript
+scope: source.tea
+file_extensions:
+  - tea
+
+contexts:
+  main:
+    - include: expr
+  comment:
+    - match: //
+      push:
+        - meta_scope: comment.line
+        - meta_content_scope: comment.line
+        - match: (?=$)
+          pop: true
+  arg-list:
+    - match: '\s*args\s+(\{)'
+      captures:
+        1: text.html
+      push:
+        - meta_scope: keyword
+        - match: '(\})'
+          captures:
+            1: text.html
+          pop: true
+        - include: arg-name
+  arg-name:
+    - match: '([a-zA-Z][a-zA-Z0-9_\$]*\s+)?\{'
+      push:
+        - meta_scope: variable.parameter
+        - match: '\}'
+          pop: true
+        - include: arg-name
+    - match: '[a-zA-Z][a-zA-Z0-9_\$]*'
+      scope: variable.parameter
+  argument:
+    - match: '@[a-zA-Z\$][a-zA-Z0-9_\$]*'
+      scope: variable.parameter
+  array:
+    - match: '\['
+      push:
+        - meta_scope: text.array
+        - match: '\]'
+          pop: true
+        - include: expr
+  arrow:
+    - match: '=>'
+      scope: keyword
+  code-block:
+    - match: '\{'
+      push:
+        - meta_scope: text.code-block
+        - match: '(?=\})'
+          pop: true
+        - include: expr
+  comprehension:
+    - match: '(from)\s+([a-zA-Z][a-zA-Z0-9_\$]*)\s+:'
+      captures:
+        1: entity.name.function
+        2: variable.parameter
+  constants:
+    - match: \b(true|false|null|void)\b
+      scope: constant.language
+  expr:
+    - include: comment
+    - include: keyword
+    - include: operator
+    - include: string
+    - include: number
+    - include: arrow
+    - include: function
+    - include: object
+    - include: array
+    - include: parens
+    - include: comprehension
+    - include: constants
+    - include: named-arg
+    - include: words
+  function:
+    - match: '(async\s+)?fn\*?\s+([a-zA-Z\$][a-zA-Z0-9_\$]*\s+)?(\{)'
+      captures:
+        2: entity.name.function
+        3: text.html
+      push:
+        - meta_scope: keyword
+        - meta_content_scope: text.html
+        - match: '(\})'
+          captures:
+            1: text.html
+          pop: true
+        - include: argument
+        - include: expr
+    - match: '(async\s+)?fn\*?((\{)([a-zA-Z\$][a-zA-Z0-9_\$]*)(,\s*[a-zA-Z\$][a-zA-Z0-9_\$]*)*(\}))?'
+      scope: keyword
+      captures:
+        2: constant.language
+        3: text.html
+        6: text.html
+    - match: '(async\s+)?fn\*?\s+([a-zA-Z][a-zA-Z0-9_\$]*)\s+(?==>)'
+      captures:
+        2: variable.parameter
+      push:
+        - meta_scope: keyword
+        - meta_content_scope: text.html
+        - match: (?=$)
+          pop: true
+        - include: expr
+  interpolation:
+    - match: '(?<!\{)\{(?!\{)'
+      captures:
+        0: constant.character.escape
+      push:
+        - meta_content_scope: meta.embedded.line
+        - match: '\}'
+          captures:
+            0: constant.character.escape
+          pop: true
+        - include: expr
+  keyword:
+    - match: '=>|return'
+      scope: keyword
+    - match: (for(\s+(ever|await)?)|\@catch|if)
+      push:
+        - meta_scope: keyword
+        - meta_content_scope: text.html
+        - match: '(\})'
+          captures:
+            1: text.html
+          pop: true
+        - include: code-block
+        - include: expr
+    - match: (\@finally|try)
+      push:
+        - meta_scope: keyword
+        - meta_content_scope: text.html
+        - match: '(\})'
+          captures:
+            1: text.html
+          pop: true
+        - include: code-block
+    - match: ^export (default )?
+      scope: keyword
+      captures:
+        1: entity.name.function
+    - match: \b(yield|await)\b
+      scope: keyword
+    - match: ^\s*\b(let)(\s+mut)?\b
+      scope: keyword
+  named-arg:
+    - match: ':[a-zA-Z][a-zA-Z0-9_\$]*'
+      scope: variable.parameter
+  number:
+    - match: \d+(\.\d+)?((e|E)(\+|\-)?\d+)?
+      scope: constant.numeric
+  object:
+    - match: '\{'
+      push:
+        - meta_scope: text.html
+        - match: '\}'
+          pop: true
+        - include: object-key
+        - include: expr
+  object-key:
+    - match: ':\('
+      push:
+        - meta_scope: variable.parameter
+        - match: \)
+          pop: true
+        - include: expr
+    - match: ':'
+      push:
+        - meta_scope: variable.parameter
+        - match: \s
+          pop: true
+        - include: expr
+  operator:
+    - match: (\.\.\.|<<<|>>>|<<|>>|<\-|&|\*|%|=|<|>|\-|\+|\/|\||\!|\~)
+      scope: entity.name.function
+    - match: '(await|typeof|delete)\{'
+      push:
+        - meta_scope: entity.name.function
+        - meta_content_scope: text.html
+        - match: '\}'
+          pop: true
+        - include: expr
+    - match: instance<
+      push:
+        - meta_scope: entity.name.function
+        - meta_content_scope: text.html
+        - match: '>'
+          pop: true
+        - include: expr
+  parens:
+    - match: (?<=\s)\(
+      push:
+        - meta_scope: text.html
+        - match: \)
+          pop: true
+        - include: expr
+  string:
+    - match: '"'
+      push:
+        - meta_scope: string.template
+        - match: '"'
+          pop: true
+        - include: interpolation
+        - include: string-escapes
+  string-escapes:
+    - match: '\\(x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|u\{[0-9A-Fa-f]+\}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.|$)'
+      scope: constant.character.escape
+  template:
+    - match: '([_$[:alpha:]][_$[:alnum:]]*)?(`)'
+      captures:
+        1: entity.name.function.tagged-template.js
+        2: punctuation.definition.string.template.begin.js
+      push:
+        - meta_scope: string.template.js
+        - match: '`'
+          captures:
+            0: punctuation.definition.string.template.end.js
+          pop: true
+  words:
+    - match: '[a-zA-Z\$][a-zA-Z0-9_\$]*'
+      scope: entity.name.tag

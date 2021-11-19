@@ -1,6 +1,6 @@
 # TeaScript Syntax Highlighter
 
-Syntax highlighter for the [https://github.com/axel669/teascript](TeaScript)
+Syntax highlighter for the [TeaScript](https://github.com/axel669/teascript)
 language.
 
 ## Installation
@@ -10,6 +10,6 @@ language.
 1. Profit
 
 ## Special Thanks
-[https://github.com/OdatNurd](OdatNurd) for converting the syntax into
+[OdatNurd](https://github.com/OdatNurd) for converting the syntax into
 sublime-syntax and testing it with his instance before real instructions were
 available.

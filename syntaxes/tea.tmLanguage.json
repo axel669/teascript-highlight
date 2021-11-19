@@ -3,41 +3,75 @@
     "name": "TeaScript",
     "scopeName": "source.tea",
     "patterns": [
-        {"include": "#expr"}
+        {
+            "include": "#expr"
+        }
     ],
     "repository": {
         "expr": {
             "patterns": [
-                {"include": "#comment"},
-                {"include": "#keyword"},
-                {"include": "#operator"},
-                {"include": "#code-block"},
-                {"include": "#string"},
-                {"include": "#number"},
-                {"include": "#arrow"},
-                {"include": "#function"},
-                {"include": "#object"},
-                {"include": "#array"},
-                {"include": "#parens"},
-                {"include": "#comprehension"},
-                {"include": "#constants"},
-                {"include": "#named-arg"},
-                {"include": "#words"}
+                {
+                    "include": "#comment"
+                },
+                {
+                    "include": "#keyword"
+                },
+                {
+                    "include": "#operator"
+                },
+                {
+                    "include": "#string"
+                },
+                {
+                    "include": "#number"
+                },
+                {
+                    "include": "#arrow"
+                },
+                {
+                    "include": "#function"
+                },
+                {
+                    "include": "#object"
+                },
+                {
+                    "include": "#array"
+                },
+                {
+                    "include": "#parens"
+                },
+                {
+                    "include": "#comprehension"
+                },
+                {
+                    "include": "#constants"
+                },
+                {
+                    "include": "#named-arg"
+                },
+                {
+                    "include": "#words"
+                }
             ]
         },
-
         "arg-list": {
             "name": "keyword",
             "begin": "\\s*args\\s+(\\{)",
             "beginCaptures": {
-                "1": {"name": "text.html"}
+                "1": {
+                    "name": "text.html"
+                }
             },
             "end": "(\\})",
             "endCaptures": {
-                "1": {"name": "text.html"}
+                "1": {
+                    "name": "text.html"
+                }
             },
             "patterns": [
-                {"include": "#arg-name"}
+                {
+                    "include": "#arg-name"
+                }
             ]
         },
         "arg-name": {
@@ -47,7 +81,9 @@
                     "begin": "([a-zA-Z][a-zA-Z0-9_\\$]*\\s+)?\\{",
                     "end": "\\}",
                     "patterns": [
-                        {"include": "#arg-name"}
+                        {
+                            "include": "#arg-name"
+                        }
                     ]
                 },
                 {
@@ -69,7 +105,9 @@
             "begin": "\\[",
             "end": "\\]",
             "patterns": [
-                {"include": "#expr"}
+                {
+                    "include": "#expr"
+                }
             ]
         },
         "arrow": {
@@ -77,11 +115,17 @@
             "match": "=>"
         },
         "code-block": {
-            "name": "text.code-block",
-            "begin": "(?<=\\b(for|if|try|\\@catch|\\@finally)\\b.+)\\{",
-            "end": "\\}",
             "patterns": [
-                {"include": "#expr"}
+                {
+                    "name": "text.code-block",
+                    "begin": "\\{",
+                    "end": "(?=\\})",
+                    "patterns": [
+                        {
+                            "include": "#expr"
+                        }
+                    ]
+                }
             ]
         },
         "comment": {
@@ -93,8 +137,12 @@
         "comprehension": {
             "match": "(from)\\s+([a-zA-Z][a-zA-Z0-9_\\$]*)\\s+:",
             "captures": {
-                "1": {"name": "entity.name.function"},
-                "2": {"name": "variable.parameter"}
+                "1": {
+                    "name": "entity.name.function"
+                },
+                "2": {
+                    "name": "variable.parameter"
+                }
             }
         },
         "constants": {
@@ -108,16 +156,26 @@
                     "contentName": "text.html",
                     "begin": "(async\\s+)?fn\\*?\\s+([a-zA-Z\\$][a-zA-Z0-9_\\$]*\\s+)?(\\{)",
                     "beginCaptures": {
-                        "2": {"name": "entity.name.function"},
-                        "3": {"name": "text.html"}
+                        "2": {
+                            "name": "entity.name.function"
+                        },
+                        "3": {
+                            "name": "text.html"
+                        }
                     },
                     "end": "(\\})",
                     "endCaptures": {
-                        "1": {"name": "text.html"}
+                        "1": {
+                            "name": "text.html"
+                        }
                     },
                     "patterns": [
-                        {"include": "#argument"},
-                        {"include": "#expr"}
+                        {
+                            "include": "#argument"
+                        },
+                        {
+                            "include": "#expr"
+                        }
                     ]
                 },
                 {
@@ -125,9 +183,15 @@
                     "contentName": "text.html",
                     "match": "(async\\s+)?fn\\*?((\\{)([a-zA-Z\\$][a-zA-Z0-9_\\$]*)(,\\s*[a-zA-Z\\$][a-zA-Z0-9_\\$]*)*(\\}))?",
                     "captures": {
-                        "2": {"name": "constant.language"},
-                        "3": {"name": "text.html"},
-                        "6": {"name": "text.html"}
+                        "2": {
+                            "name": "constant.language"
+                        },
+                        "3": {
+                            "name": "text.html"
+                        },
+                        "6": {
+                            "name": "text.html"
+                        }
                     }
                 },
                 {
@@ -135,11 +199,15 @@
                     "contentName": "text.html",
                     "begin": "(async\\s+)?fn\\*?\\s+([a-zA-Z][a-zA-Z0-9_\\$]*)\\s+(?==>)",
                     "beginCaptures": {
-                        "2": {"name": "variable.parameter"}
+                        "2": {
+                            "name": "variable.parameter"
+                        }
                     },
                     "end": "(?=$)",
                     "patterns": [
-                        {"include": "#expr"}
+                        {
+                            "include": "#expr"
+                        }
                     ]
                 }
             ]
@@ -147,15 +215,21 @@
         "interpolation": {
             "begin": "(?<!\\{)\\{(?!\\{)",
             "beginCaptures": {
-                "0": {"name": "constant.character.escape"}
+                "0": {
+                    "name": "constant.character.escape"
+                }
             },
             "endCaptures": {
-                "0": {"name": "constant.character.escape"}
+                "0": {
+                    "name": "constant.character.escape"
+                }
             },
             "end": "\\}",
             "contentName": "meta.embedded.line",
             "patterns": [
-                {"include": "#expr"}
+                {
+                    "include": "#expr"
+                }
             ]
         },
         "keyword": {
@@ -166,18 +240,51 @@
                 },
                 {
                     "name": "keyword",
-                    "match": "^\\s*(@catch|@finally)"
+                    "begin": "(for(\\s+(ever|await)?)|\\@catch|if)",
+                    "end": "(\\})",
+                    "contentName": "text.html",
+                    "endCaptures": {
+                        "1": {
+                            "name": "text.html"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "#code-block"
+                        },
+                        {
+                            "include": "#expr"
+                        }
+                    ]
+                },
+                {
+                    "name": "keyword",
+                    "begin": "(\\@finally|try)",
+                    "end": "(\\})",
+                    "contentName": "text.html",
+                    "endCaptures": {
+                        "1": {
+                            "name": "text.html"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "#code-block"
+                        }
+                    ]
                 },
                 {
                     "name": "keyword",
                     "match": "^export (default )?",
                     "captures": {
-                        "1": {"name": "entity.name.function"}
+                        "1": {
+                            "name": "entity.name.function"
+                        }
                     }
                 },
                 {
                     "name": "keyword",
-                    "match": "\\b(if|try|for(\\s+(ever|await)?)|yield|await)\\b"
+                    "match": "\\b(yield|await)\\b"
                 },
                 {
                     "name": "keyword",
@@ -198,8 +305,12 @@
             "end": "\\}",
             "name": "text.html",
             "patterns": [
-                {"include": "#object-key"},
-                {"include": "#expr"}
+                {
+                    "include": "#object-key"
+                },
+                {
+                    "include": "#expr"
+                }
             ]
         },
         "object-key": {
@@ -219,44 +330,10 @@
                     "begin": ":",
                     "end": "\\s",
                     "patterns": [
-                        {"include": "#expr"}
+                        {
+                            "include": "#expr"
+                        }
                     ]
-                },
-                {
-                    "match": "^\\s*([a-zA-Z\\$][a-zA-Z0-9_\\$]*)",
-                    "captures": {
-                        "1": {"name": "variable.parameter"}
-                    }
-                },
-                {
-                    "match": "(?<=\\{)\\s*([a-zA-Z\\$][a-zA-Z0-9_\\$]*)",
-                    "captures": {
-                        "1": {"name": "variable.parameter"}
-                    }
-                },
-                {
-                    "match": "(?<=,)\\s*([a-zA-Z\\$][a-zA-Z0-9_\\$]*)",
-                    "captures": {
-                        "1": {"name": "variable.parameter"}
-                    }
-                },
-                {
-                    "name": "variable.parameter",
-                    "begin": "(?<=(^|\\{|,))\\s*\\$\\(",
-                    "end": "\\)",
-                    "patterns": [
-                        {"include": "#expr"}
-                    ]
-                },
-                {
-                    "name": "variable.parameter",
-                    "begin": "(?<=(^|\\{|,))\\s*\"",
-                    "end": "\"",
-                    "patterns": [
-                        {"include": "#interpolation"},
-                        {"include": "#string-escapes"}
-                    ],
-                    "contentName": "string"
                 }
             ]
         },
@@ -272,7 +349,9 @@
                     "end": "\\}",
                     "contentName": "text.html",
                     "patterns": [
-                        {"include": "#expr"}
+                        {
+                            "include": "#expr"
+                        }
                     ]
                 },
                 {
@@ -281,7 +360,9 @@
                     "end": ">",
                     "contentName": "text.html",
                     "patterns": [
-                        {"include": "#expr"}
+                        {
+                            "include": "#expr"
+                        }
                     ]
                 }
             ]
@@ -291,7 +372,9 @@
             "begin": "(?<=\\s)\\(",
             "end": "\\)",
             "patterns": [
-                {"include": "#expr"}
+                {
+                    "include": "#expr"
+                }
             ]
         },
         "string": {
@@ -301,8 +384,12 @@
                     "begin": "\"",
                     "end": "\"",
                     "patterns": [
-                        {"include": "#interpolation"},
-                        {"include": "#string-escapes"}
+                        {
+                            "include": "#interpolation"
+                        },
+                        {
+                            "include": "#string-escapes"
+                        }
                     ]
                 }
             ]
@@ -313,9 +400,6 @@
         },
         "template": {
             "patterns": [
-                {
-                    "include": "#template-call"
-                },
                 {
                     "name": "string.template.js",
                     "begin": "([_$[:alpha:]][_$[:alnum:]]*)?(`)",
@@ -333,8 +417,7 @@
                             "name": "punctuation.definition.string.template.end.js"
                         }
                     },
-                    "patterns": [
-                    ]
+                    "patterns": []
                 }
             ]
         },

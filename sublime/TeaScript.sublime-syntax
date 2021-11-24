@@ -10,7 +10,13 @@ contexts:
   main:
     - include: expr
   comment:
-    - match: //
+    - match: '###'
+      push:
+        - meta_scope: comment.line
+        - meta_content_scope: comment.line
+        - match: '###'
+          pop: true
+    - match: '#'
       push:
         - meta_scope: comment.line
         - meta_content_scope: comment.line
@@ -108,17 +114,6 @@ contexts:
         - match: (?=$)
           pop: true
         - include: expr
-  interpolation:
-    - match: '(?<!\{)\{(?!\{)'
-      captures:
-        0: constant.character.escape
-      push:
-        - meta_content_scope: meta.embedded.line
-        - match: '\}'
-          captures:
-            0: constant.character.escape
-          pop: true
-        - include: expr
   keyword:
     - match: '=>|return'
       scope: keyword
@@ -141,14 +136,32 @@ contexts:
             1: text.html
           pop: true
         - include: code-block
+    - match: 'export\s+(\{)'
+      captures:
+        1: text.html
+      push:
+        - meta_scope: keyword
+        - meta_content_scope: text.export-block
+        - match: '\}'
+          captures:
+            0: text.html
+          pop: true
+        - include: keyword-export-entry
     - match: ^export (default )?
       scope: keyword
       captures:
         1: entity.name.function
-    - match: \b(yield|await)\b
+    - match: \b(yield|await|let|mut)\b
       scope: keyword
-    - match: ^\s*\b(let)(\s+mut)?\b
-      scope: keyword
+  keyword-export-entry:
+    - match: '([a-zA-Z\$][a-zA-Z0-9_\$]*)\s+(as)\s+([a-zA-Z\$][a-zA-Z0-9_\$]*)'
+      scope: text.export-block
+      captures:
+        1: entity.name.tag
+        2: entity.name.function
+        3: variable.parameter
+    - match: '[a-zA-Z\$][a-zA-Z0-9_\$]*'
+      scope: variable.parameter
   named-arg:
     - match: ':[a-zA-Z][a-zA-Z0-9_\$]*'
       scope: variable.parameter
@@ -206,11 +219,22 @@ contexts:
         - meta_scope: string.template
         - match: '"'
           pop: true
-        - include: interpolation
+        - include: string-interpolation
         - include: string-escapes
   string-escapes:
-    - match: '\\(x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|u\{[0-9A-Fa-f]+\}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.|$)'
+    - match: '\\(x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|u\{[0-9A-Fa-f]+\}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.|#)'
       scope: constant.character.escape
+  string-interpolation:
+    - match: '#\{'
+      captures:
+        0: constant.character.escape
+      push:
+        - meta_content_scope: meta.embedded.line
+        - match: '\}'
+          captures:
+            0: constant.character.escape
+          pop: true
+        - include: expr
   template:
     - match: '([_$[:alpha:]][_$[:alnum:]]*)?(`)'
       captures:
@@ -225,3 +249,11 @@ contexts:
   words:
     - match: '[a-zA-Z\$][a-zA-Z0-9_\$]*'
       scope: entity.name.tag
+    - match: '(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*(?=\()'
+      scope: entity.name.function
+      captures:
+        1: text.normal
+    - match: '(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*'
+      scope: support.variable.property
+      captures:
+        1: text.normal

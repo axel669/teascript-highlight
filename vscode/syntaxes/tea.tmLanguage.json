@@ -129,10 +129,20 @@
             ]
         },
         "comment": {
-            "name": "comment.line",
-            "begin": "//",
-            "end": "(?=$)",
-            "contentName": "comment.line"
+            "patterns": [
+                {
+                    "name": "comment.line",
+                    "begin": "###",
+                    "end": "###",
+                    "contentName": "comment.line"
+                },
+                {
+                    "name": "comment.line",
+                    "begin": "#",
+                    "end": "(?=$)",
+                    "contentName": "comment.line"
+                }
+            ]
         },
         "comprehension": {
             "match": "(from)\\s+([a-zA-Z][a-zA-Z0-9_\\$]*)\\s+:",
@@ -212,26 +222,6 @@
                 }
             ]
         },
-        "interpolation": {
-            "begin": "(?<!\\{)\\{(?!\\{)",
-            "beginCaptures": {
-                "0": {
-                    "name": "constant.character.escape"
-                }
-            },
-            "endCaptures": {
-                "0": {
-                    "name": "constant.character.escape"
-                }
-            },
-            "end": "\\}",
-            "contentName": "meta.embedded.line",
-            "patterns": [
-                {
-                    "include": "#expr"
-                }
-            ]
-        },
         "keyword": {
             "patterns": [
                 {
@@ -275,6 +265,27 @@
                 },
                 {
                     "name": "keyword",
+                    "begin": "export\\s+(\\{)",
+                    "end": "\\}",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "text.html"
+                        }
+                    },
+                    "endCaptures": {
+                        "0": {
+                            "name": "text.html"
+                        }
+                    },
+                    "contentName": "text.export-block",
+                    "patterns": [
+                        {
+                            "include": "#keyword-export-entry"
+                        }
+                    ]
+                },
+                {
+                    "name": "keyword",
                     "match": "^export (default )?",
                     "captures": {
                         "1": {
@@ -284,11 +295,30 @@
                 },
                 {
                     "name": "keyword",
-                    "match": "\\b(yield|await)\\b"
+                    "match": "\\b(yield|await|let|mut)\\b"
+                }
+            ]
+        },
+        "keyword-export-entry": {
+            "patterns": [
+                {
+                    "name": "text.export-block",
+                    "match": "([a-zA-Z\\$][a-zA-Z0-9_\\$]*)\\s+(as)\\s+([a-zA-Z\\$][a-zA-Z0-9_\\$]*)",
+                    "captures": {
+                        "1": {
+                            "name": "entity.name.tag"
+                        },
+                        "2": {
+                            "name": "entity.name.function"
+                        },
+                        "3": {
+                            "name": "variable.parameter"
+                        }
+                    }
                 },
                 {
-                    "name": "keyword",
-                    "match": "^\\s*\\b(let)(\\s+mut)?\\b"
+                    "name": "variable.parameter",
+                    "match": "[a-zA-Z\\$][a-zA-Z0-9_\\$]*"
                 }
             ]
         },
@@ -385,7 +415,7 @@
                     "end": "\"",
                     "patterns": [
                         {
-                            "include": "#interpolation"
+                            "include": "#string-interpolation"
                         },
                         {
                             "include": "#string-escapes"
@@ -396,7 +426,27 @@
         },
         "string-escapes": {
             "name": "constant.character.escape",
-            "match": "\\\\(x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|u\\{[0-9A-Fa-f]+\\}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.|$)"
+            "match": "\\\\(x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|u\\{[0-9A-Fa-f]+\\}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.|#)"
+        },
+        "string-interpolation": {
+            "begin": "#\\{",
+            "beginCaptures": {
+                "0": {
+                    "name": "constant.character.escape"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "constant.character.escape"
+                }
+            },
+            "end": "\\}",
+            "contentName": "meta.embedded.line",
+            "patterns": [
+                {
+                    "include": "#expr"
+                }
+            ]
         },
         "template": {
             "patterns": [
@@ -422,8 +472,30 @@
             ]
         },
         "words": {
-            "name": "entity.name.tag",
-            "match": "[a-zA-Z\\$][a-zA-Z0-9_\\$]*"
+            "patterns": [
+                {
+                    "name": "entity.name.tag",
+                    "match": "[a-zA-Z\\$][a-zA-Z0-9_\\$]*"
+                },
+                {
+                    "name": "entity.name.function",
+                    "match": "(\\.)[a-zA-Z\\$][a-zA-Z0-9_\\$]*(?=\\()",
+                    "captures": {
+                        "1": {
+                            "name": "text.normal"
+                        }
+                    }
+                },
+                {
+                    "name": "support.variable.property",
+                    "match": "(\\.)[a-zA-Z\\$][a-zA-Z0-9_\\$]*",
+                    "captures": {
+                        "1": {
+                            "name": "text.normal"
+                        }
+                    }
+                }
+            ]
         }
     }
 }

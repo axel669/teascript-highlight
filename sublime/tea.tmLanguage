@@ -358,7 +358,7 @@
             <key>name</key>
             <string>keyword</string>
             <key>begin</key>
-            <string>(for(\s+(ever|await)?)|\@catch|if)</string>
+            <string>(for(\s+(ever|await)?)|\@catch|if|safeguard|guard)</string>
             <key>end</key>
             <string>(\})</string>
             <key>contentName</key>
@@ -460,6 +460,20 @@
             <string>keyword</string>
             <key>match</key>
             <string>\b(yield|await|let|mut)\b</string>
+          </dict>
+          <dict>
+            <key>name</key>
+            <string>keyword</string>
+            <key>match</key>
+            <string>^\s*import\s+([^\s]+)\s(from)</string>
+            <key>captures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>variable.parameter constant.language</string>
+              </dict>
+            </dict>
           </dict>
         </array>
       </dict>

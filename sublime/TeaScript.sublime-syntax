@@ -117,7 +117,7 @@ contexts:
   keyword:
     - match: '=>|return'
       scope: keyword
-    - match: (for(\s+(ever|await)?)|\@catch|if)
+    - match: (for(\s+(ever|await)?)|\@catch|if|safeguard|guard)
       push:
         - meta_scope: keyword
         - meta_content_scope: text.html
@@ -153,6 +153,10 @@ contexts:
         1: entity.name.function
     - match: \b(yield|await|let|mut)\b
       scope: keyword
+    - match: '^\s*import\s+([^\s]+)\s(from)'
+      scope: keyword
+      captures:
+        1: variable.parameter constant.language
   keyword-export-entry:
     - match: '([a-zA-Z\$][a-zA-Z0-9_\$]*)\s+(as)\s+([a-zA-Z\$][a-zA-Z0-9_\$]*)'
       scope: text.export-block

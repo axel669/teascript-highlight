@@ -230,7 +230,7 @@
                 },
                 {
                     "name": "keyword",
-                    "begin": "(for(\\s+(ever|await)?)|\\@catch|if)",
+                    "begin": "(for(\\s+(ever|await)?)|\\@catch|if|safeguard|guard)",
                     "end": "(\\})",
                     "contentName": "text.html",
                     "endCaptures": {
@@ -296,6 +296,15 @@
                 {
                     "name": "keyword",
                     "match": "\\b(yield|await|let|mut)\\b"
+                },
+                {
+                    "name": "keyword",
+                    "match": "^\\s*import\\s+([^\\s]+)\\s(from)",
+                    "captures": {
+                        "1": {
+                            "name": "variable.parameter constant.language"
+                        }
+                    }
                 }
             ]
         },

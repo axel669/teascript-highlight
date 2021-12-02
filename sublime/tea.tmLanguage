@@ -358,7 +358,7 @@
             <key>name</key>
             <string>keyword</string>
             <key>begin</key>
-            <string>(for(\s+(ever|await)?)|\@catch|if|safeguard|guard)</string>
+            <string>(for(\s+(ever|await)?)|\@catch|if|safeguard(\^)?|guard)</string>
             <key>end</key>
             <string>(\})</string>
             <key>contentName</key>
@@ -760,7 +760,7 @@
             <key>name</key>
             <string>entity.name.function</string>
             <key>match</key>
-            <string>(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*(?=\()</string>
+            <string>\??(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*\??(?=\()</string>
             <key>captures</key>
             <dict>
               <key>1</key>
@@ -774,7 +774,7 @@
             <key>name</key>
             <string>support.variable.property</string>
             <key>match</key>
-            <string>(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*</string>
+            <string>\??(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*</string>
             <key>captures</key>
             <dict>
               <key>1</key>

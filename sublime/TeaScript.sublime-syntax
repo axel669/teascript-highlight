@@ -117,7 +117,7 @@ contexts:
   keyword:
     - match: '=>|return'
       scope: keyword
-    - match: (for(\s+(ever|await)?)|\@catch|if|safeguard|guard)
+    - match: (for(\s+(ever|await)?)|\@catch|if|safeguard(\^)?|guard)
       push:
         - meta_scope: keyword
         - meta_content_scope: text.html
@@ -253,11 +253,11 @@ contexts:
   words:
     - match: '[a-zA-Z\$][a-zA-Z0-9_\$]*'
       scope: entity.name.tag
-    - match: '(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*(?=\()'
+    - match: '\??(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*\??(?=\()'
       scope: entity.name.function
       captures:
         1: text.normal
-    - match: '(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*'
+    - match: '\??(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*'
       scope: support.variable.property
       captures:
         1: text.normal

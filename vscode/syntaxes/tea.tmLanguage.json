@@ -230,7 +230,7 @@
                 },
                 {
                     "name": "keyword",
-                    "begin": "(for(\\s+(ever|await)?)|\\@catch|if|safeguard|guard)",
+                    "begin": "(for(\\s+(ever|await)?)|\\@catch|if|safeguard(\\^)?|guard)",
                     "end": "(\\})",
                     "contentName": "text.html",
                     "endCaptures": {
@@ -488,7 +488,7 @@
                 },
                 {
                     "name": "entity.name.function",
-                    "match": "(\\.)[a-zA-Z\\$][a-zA-Z0-9_\\$]*(?=\\()",
+                    "match": "\\??(\\.)[a-zA-Z\\$][a-zA-Z0-9_\\$]*\\??(?=\\()",
                     "captures": {
                         "1": {
                             "name": "text.normal"
@@ -497,7 +497,7 @@
                 },
                 {
                     "name": "support.variable.property",
-                    "match": "(\\.)[a-zA-Z\\$][a-zA-Z0-9_\\$]*",
+                    "match": "\\??(\\.)[a-zA-Z\\$][a-zA-Z0-9_\\$]*",
                     "captures": {
                         "1": {
                             "name": "text.normal"

@@ -115,7 +115,7 @@ contexts:
           pop: true
         - include: expr
   keyword:
-    - match: '=>|return'
+    - match: '=>|debugger'
       scope: keyword
     - match: (for(\s+(ever|await)?)|\@catch|if|safeguard(\^)?|guard)
       push:
@@ -194,7 +194,7 @@ contexts:
           pop: true
         - include: expr
   operator:
-    - match: (\.\.\.|<<<|>>>|<<|>>|<\-|&|\*|%|=|<|>|\-|\+|\/|\||\!|\~)
+    - match: (\.\.\.|<<<|>>>|<<|>>|<\+|\+>|&|\*|%|=|<|>|\-|\+|\/|\||\!|\~)
       scope: entity.name.function
     - match: '(await|typeof|delete)\{'
       push:

@@ -46,7 +46,7 @@ contexts:
     - match: '@[a-zA-Z\$][a-zA-Z0-9_\$]*'
       scope: variable.parameter
   array:
-    - match: '\['
+    - match: '(?<=\s)\['
       push:
         - meta_scope: text.array
         - match: '\]'
@@ -76,6 +76,7 @@ contexts:
     - include: operator
     - include: string
     - include: number
+    - include: regex
     - include: arrow
     - include: function
     - include: object
@@ -115,7 +116,7 @@ contexts:
           pop: true
         - include: expr
   keyword:
-    - match: '=>|debugger'
+    - match: '=>|debugger|do'
       scope: keyword
     - match: (for(\s+(ever|await)?)|\@catch|if|safeguard(\^)?|guard)
       push:
@@ -153,10 +154,23 @@ contexts:
         1: entity.name.function
     - match: \b(yield|await|let|mut)\b
       scope: keyword
+    - match: '^\s*import\s+(\{)([^\}]+)(\})\s(from)'
+      scope: keyword
+      captures:
+        1: entity.name.function
+        2: variable.parameter constant.language
+        3: entity.name.function
     - match: '^\s*import\s+([^\s]+)\s(from)'
       scope: keyword
       captures:
         1: variable.parameter constant.language
+    - match: '^\s*import\s(\*)\sas\s+([^\s]+)\s(from)'
+      scope: keyword
+      captures:
+        1: entity.name.function
+        2: variable.parameter constant.language
+    - match: ^\s*import\s(?=")
+      scope: keyword
   keyword-export-entry:
     - match: '([a-zA-Z\$][a-zA-Z0-9_\$]*)\s+(as)\s+([a-zA-Z\$][a-zA-Z0-9_\$]*)'
       scope: text.export-block
@@ -170,7 +184,7 @@ contexts:
     - match: ':[a-zA-Z][a-zA-Z0-9_\$]*'
       scope: variable.parameter
   number:
-    - match: \d+(\.\d+)?((e|E)(\+|\-)?\d+)?
+    - match: \-?\d+(\.\d+)?((e|E)(\+|\-)?\d+)?
       scope: constant.numeric
   object:
     - match: '\{'
@@ -194,13 +208,24 @@ contexts:
           pop: true
         - include: expr
   operator:
-    - match: (\.\.\.|<<<|>>>|<<|>>|<\+|\+>|&|\*|%|=|<|>|\-|\+|\/|\||\!|\~)
+    - match: '(<<<|>>>|<<|>>|<\+|\+>|\|\|?|&&?|\*\*?|%|(=|!)=|=|<|\-?>|\-|\+|\/|:)[\s\r\n]'
       scope: entity.name.function
+    - match: \.\.\.
+      scope: entity.name.function
+    - match: '&(?=\w)'
+      scope: keyword
     - match: '(await|typeof|delete)\{'
       push:
         - meta_scope: entity.name.function
         - meta_content_scope: text.html
         - match: '\}'
+          pop: true
+        - include: expr
+    - match: (\!|\~|\-|\?\??)\(
+      push:
+        - meta_scope: entity.name.function
+        - meta_content_scope: text.html
+        - match: \)
           pop: true
         - include: expr
     - match: instance<
@@ -217,6 +242,15 @@ contexts:
         - match: \)
           pop: true
         - include: expr
+  regex:
+    - match: /
+      push:
+        - meta_scope: string.regexp
+        - match: /(\w*)
+          captures:
+            1: string.template
+          pop: true
+        - include: string-escapes
   string:
     - match: '"'
       push:
@@ -251,13 +285,37 @@ contexts:
             0: punctuation.definition.string.template.end.js
           pop: true
   words:
+    - match: '([a-zA-Z\$][a-zA-Z0-9_\$]*)(\()'
+      captures:
+        1: entity.name.tag
+        2: text.html
+      push:
+        - meta_scope: text.normal
+        - match: (\))
+          captures:
+            1: text.html
+          pop: true
+        - include: expr
     - match: '[a-zA-Z\$][a-zA-Z0-9_\$]*'
       scope: entity.name.tag
-    - match: '\??(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*\??(?=\()'
-      scope: entity.name.function
+    - match: '\??(\.)([a-zA-Z\$][a-zA-Z0-9_\$]*)\??(\()'
       captures:
-        1: text.normal
+        2: entity.name.function
+      push:
+        - meta_scope: text.normal
+        - match: (\))
+          captures:
+            1: text.normal
+          pop: true
+        - include: expr
     - match: '\??(\.)[a-zA-Z\$][a-zA-Z0-9_\$]*'
       scope: support.variable.property
       captures:
         1: text.normal
+    - match: '(?<=\w)\??\['
+      push:
+        - meta_scope: support.variable.property
+        - meta_content_scope: text.normal
+        - match: '\]'
+          pop: true
+        - include: expr

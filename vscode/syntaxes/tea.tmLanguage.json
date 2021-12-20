@@ -26,6 +26,9 @@
                     "include": "#number"
                 },
                 {
+                    "include": "#regex"
+                },
+                {
                     "include": "#arrow"
                 },
                 {
@@ -102,7 +105,7 @@
         },
         "array": {
             "name": "text.array",
-            "begin": "\\[",
+            "begin": "(?<=\\s)\\[",
             "end": "\\]",
             "patterns": [
                 {
@@ -226,7 +229,7 @@
             "patterns": [
                 {
                     "name": "keyword",
-                    "match": "=>|debugger"
+                    "match": "=>|debugger|do"
                 },
                 {
                     "name": "keyword",
@@ -299,12 +302,43 @@
                 },
                 {
                     "name": "keyword",
+                    "match": "^\\s*import\\s+(\\{)([^\\}]+)(\\})\\s(from)",
+                    "captures": {
+                        "1": {
+                            "name": "entity.name.function"
+                        },
+                        "2": {
+                            "name": "variable.parameter constant.language"
+                        },
+                        "3": {
+                            "name": "entity.name.function"
+                        }
+                    }
+                },
+                {
+                    "name": "keyword",
                     "match": "^\\s*import\\s+([^\\s]+)\\s(from)",
                     "captures": {
                         "1": {
                             "name": "variable.parameter constant.language"
                         }
                     }
+                },
+                {
+                    "name": "keyword",
+                    "match": "^\\s*import\\s(\\*)\\sas\\s+([^\\s]+)\\s(from)",
+                    "captures": {
+                        "1": {
+                            "name": "entity.name.function"
+                        },
+                        "2": {
+                            "name": "variable.parameter constant.language"
+                        }
+                    }
+                },
+                {
+                    "name": "keyword",
+                    "match": "^\\s*import\\s(?=\")"
                 }
             ]
         },
@@ -337,7 +371,7 @@
         },
         "number": {
             "name": "constant.numeric",
-            "match": "\\d+(\\.\\d+)?((e|E)(\\+|\\-)?\\d+)?"
+            "match": "\\-?\\d+(\\.\\d+)?((e|E)(\\+|\\-)?\\d+)?"
         },
         "object": {
             "begin": "\\{",
@@ -380,12 +414,31 @@
             "patterns": [
                 {
                     "name": "entity.name.function",
-                    "match": "(\\.\\.\\.|<<<|>>>|<<|>>|<\\+|\\+>|&|\\*|%|=|<|>|\\-|\\+|\\/|\\||\\!|\\~)"
+                    "match": "(<<<|>>>|<<|>>|<\\+|\\+>|\\|\\|?|&&?|\\*\\*?|%|(=|!)=|=|<|\\-?>|\\-|\\+|\\/|:)[\\s\\r\\n]"
+                },
+                {
+                    "name": "entity.name.function",
+                    "match": "\\.\\.\\."
+                },
+                {
+                    "name": "keyword",
+                    "match": "&(?=\\w)"
                 },
                 {
                     "name": "entity.name.function",
                     "begin": "(await|typeof|delete)\\{",
                     "end": "\\}",
+                    "contentName": "text.html",
+                    "patterns": [
+                        {
+                            "include": "#expr"
+                        }
+                    ]
+                },
+                {
+                    "name": "entity.name.function",
+                    "begin": "(\\!|\\~|\\-|\\?\\??)\\(",
+                    "end": "\\)",
                     "contentName": "text.html",
                     "patterns": [
                         {
@@ -413,6 +466,21 @@
             "patterns": [
                 {
                     "include": "#expr"
+                }
+            ]
+        },
+        "regex": {
+            "name": "string.regexp",
+            "begin": "/",
+            "end": "/(\\w*)",
+            "endCaptures": {
+                "1": {
+                    "name": "string.template"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#string-escapes"
                 }
             ]
         },
@@ -483,17 +551,51 @@
         "words": {
             "patterns": [
                 {
+                    "name": "text.normal",
+                    "begin": "([a-zA-Z\\$][a-zA-Z0-9_\\$]*)(\\()",
+                    "end": "(\\))",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "entity.name.tag"
+                        },
+                        "2": {
+                            "name": "text.html"
+                        }
+                    },
+                    "endCaptures": {
+                        "1": {
+                            "name": "text.html"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "#expr"
+                        }
+                    ]
+                },
+                {
                     "name": "entity.name.tag",
                     "match": "[a-zA-Z\\$][a-zA-Z0-9_\\$]*"
                 },
                 {
-                    "name": "entity.name.function",
-                    "match": "\\??(\\.)[a-zA-Z\\$][a-zA-Z0-9_\\$]*\\??(?=\\()",
-                    "captures": {
+                    "name": "text.normal",
+                    "begin": "\\??(\\.)([a-zA-Z\\$][a-zA-Z0-9_\\$]*)\\??(\\()",
+                    "end": "(\\))",
+                    "beginCaptures": {
+                        "2": {
+                            "name": "entity.name.function"
+                        }
+                    },
+                    "endCaptures": {
                         "1": {
                             "name": "text.normal"
                         }
-                    }
+                    },
+                    "patterns": [
+                        {
+                            "include": "#expr"
+                        }
+                    ]
                 },
                 {
                     "name": "support.variable.property",
@@ -503,6 +605,17 @@
                             "name": "text.normal"
                         }
                     }
+                },
+                {
+                    "name": "support.variable.property",
+                    "begin": "(?<=\\w)\\??\\[",
+                    "end": "\\]",
+                    "contentName": "text.normal",
+                    "patterns": [
+                        {
+                            "include": "#expr"
+                        }
+                    ]
                 }
             ]
         }
